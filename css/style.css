@@ -141,9 +141,10 @@ body{
 }
 @media (max-height: 500px),(max-width: 500px){
 	#grid{
+		position: static;
+		margin: 5% auto;
 		font-size: 0.5em;
 		width: 400px; height: 400px;
 		min-width: 400px; min-height: 400px;
-		margin: -200px 0 0 -200px;
 	}
 }
