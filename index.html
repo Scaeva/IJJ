@@ -5,18 +5,22 @@
 	<link href="img/icon.gif" rel="Shortcut Icon">
 	<title>IJJ GROUP</title>
 	<link href="css/style.css" media="screen" type="text/css" rel="stylesheet">
+	<!--[if IE 8]><style>body{display: table; margin: 0 auto;} #grid{display: table-cell; vertical-align: middle;} #l, #p{padding: 10px; height: 2em;}</style><![endif]-->
+	<!--[if lte IE 8]><style>#grid{position: static;}</style><![endif]-->
+	<!--[if lte IE 7]><style>#grid{margin: 5% auto;} #l, #p{height: 1.1em; width: 44%;}</style><![endif]-->
 </head>
 <body>
 	<div id="grid">
 		<div id="a">
+			<img src="img/m1.png" />
 			<form method="POST">
-				<label>Login Name:<input type="text" name="login" id="l" /></label>
-				<label>Password:<input type="password" name="password" id="p" /></label>
-				<div><input type="submit" value="ENTER" name="submit" id="s" /></div>
+				<label>Login Name:<input type="text" name="login" id="l" /><img src="img/inp.gif" /></label>
+				<label>Password:<input type="password" name="password" id="p" /><img src="img/inp.gif" /></label>
+				<div id="d"><img src="img/btn.png" /><input type="submit" value="ENTER" name="submit" id="s" /></div>
 				<p id="t">Some hidden text to show</p>
 			</form>
 		</div>
-		<div id="b"><span><img src="img/1.gif" /><p>Oil processing</p></span><span><img src="img/2.gif" /><p>Oil wholesale</p></span><span><img src="img/3.gif" /><p>Trade financing</p></span></div>
+		<div id="b"><span><img class="o" src="img/o.png" /><img class="i" src="img/1.gif" /><p>Oil processing</p></span><span><img class="o" src="img/o.png" /><img class="i" src="img/2.gif" /><p>Oil wholesale</p></span><span><img class="o" src="img/o.png" /><img class="i" src="img/3.gif" /><p>Trade financing</p></span></div>
 	</div>
 </body>
 </html>
