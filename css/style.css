@@ -140,6 +140,9 @@ body{
 	}
 }
 @media (max-height: 500px),(max-width: 500px){
+	html{
+		height: auto;
+	}
 	#grid{
 		position: static;
 		margin: 5% auto;
