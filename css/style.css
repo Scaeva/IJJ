@@ -114,13 +114,13 @@ body{
 	left: 5.1%;
     position: absolute;
 }
-@media (min-height: 960px),(min-width: 960px){
+@media (min-height: 960px) and (min-width: 960px){
 	#grid{
 		width: 960px; height: 960px;
 		margin: -480px 0 0 -480px;
 	}
 }
-@media (max-height: 700px),(max-width: 700px){
+@media (max-height: 700px) and (max-width: 700px){
 	#grid{
 		font-size: 0.8em;
 		width: 600px; height: 600px;
@@ -131,7 +131,7 @@ body{
 		margin-top: 4.3%;
 	}
 }
-@media (max-height: 600px),(max-width: 600px){
+@media (max-height: 600px) and (max-width: 600px){
 	#grid{
 		font-size: 0.6em;
 		width: 500px; height: 500px;
@@ -139,7 +139,7 @@ body{
 		margin: -250px 0 0 -250px;
 	}
 }
-@media (max-height: 500px),(max-width: 500px){
+@media (max-height: 500px) and (max-width: 500px){
 	html{
 		height: auto;
 	}
