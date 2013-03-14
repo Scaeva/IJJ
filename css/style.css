@@ -99,7 +99,7 @@ body{
 	width: 25.52%;
 	height: 25.52%;
 	display: inline-block;
-	float: left;
+/*	float: left;*/
 	position: relative;
 }
 .o{
@@ -138,6 +138,7 @@ body{
 		min-width: 500px; min-height: 500px;
 		margin: -250px 0 0 -250px;
 	}
+	#b>span{margin: 0 3.9%;}
 }
 @media (max-height: 500px),(max-width: 500px){
 	html{
