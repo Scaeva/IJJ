@@ -1,3 +1,337 @@
 /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas. Dual MIT/BSD license */
 /*! NOTE: If you're already including a window.matchMedia polyfill via Modernizr or otherwise, you don't need this part */
-window.matchMedia=window.matchMedia||function(a,b){var c,d=a.documentElement,e=d.firstElementChild||d.firstChild,f=a.createElement("body"),g=a.createElement("div");return g.id="mq-test-1",g.style.cssText="position:absolute;top:-100em",f.appendChild(g),function(a){return g.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',d.insertBefore(f,e),c=g.offsetWidth==42,d.removeChild(f),{matches:c,media:a}}}(document),function(a){function v(){s(!0)}a.respond={},respond.update=function(){},respond.mediaQueriesSupported=a.matchMedia&&a.matchMedia("only all").matches;if(respond.mediaQueriesSupported)return;var b=a.document,c=b.documentElement,d=[],e=[],f=[],g={},h=30,i=b.getElementsByTagName("head")[0]||c,j=i.getElementsByTagName("link"),k=[],l=function(){var b=j,c=b.length,d=0,e,f,h,i;for(;d<c;d++)e=b[d],f=e.href,h=e.media,i=e.rel&&e.rel.toLowerCase()==="stylesheet",!!f&&i&&!g[f]&&(e.styleSheet&&e.styleSheet.rawCssText?(n(e.styleSheet.rawCssText,f,h),g[f]=!0):(!/^([a-zA-Z]+?:(\/\/)?)/.test(f)||f.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&k.push({href:f,media:h}));m()},m=function(){if(k.length){var a=k.shift();t(a.href,function(b){n(b,a.href,a.media),g[a.href]=!0,m()})}},n=function(a,b,c){var f=a.match(/@media[^\{]+\{([^\{\}]+\{[^\}\{]+\})+/gi),g=f&&f.length||0,b=b.substring(0,b.lastIndexOf("/")),h=function(a){return a.replace(/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,"$1"+b+"$2$3")},i=!g&&c,j=0,k,l,m,n,o;b.length&&(b+="/"),i&&(g=1);for(;j<g;j++){k=0,i?(l=c,e.push(h(a))):(l=f[j].match(/@media *([^\{]+)\{([\S\s]+?)$/)&&RegExp.$1,e.push(RegExp.$2&&h(RegExp.$2))),n=l.split(","),o=n.length;for(;k<o;k++)m=n[k],d.push({media:m.match(/(only\s+)?([a-zA-Z]+)(\sand)?/)&&RegExp.$2,rules:e.length-1,minw:m.match(/\(min\-width:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:m.match(/\(max\-width:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||""),minh:m.match(/\(min\-height:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxh:m.match(/\(max\-height:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}s()},o,p,q=function(){var a,d=b.createElement("div"),e=b.body,f=!1;return d.style.cssText="position:absolute;font-size:1em;width:1em",e||(e=f=b.createElement("body")),e.appendChild(d),c.insertBefore(e,c.firstChild),a=d.offsetWidth,f?c.removeChild(e):e.removeChild(d),a=r=parseFloat(a),a},r,s=function(a){var g="clientWidth",k=c[g],l=b.compatMode==="CSS1Compat"&&k||b.body[g]||k,m="clientHeight",k=c[m],n=b.compatMode==="CSS1Compat"&&k||b.body[m]||k,t={},u=j[j.length-1],v=(new Date).getTime();if(a&&o&&v-o<h){clearTimeout(p),p=setTimeout(s,h);return}o=v;for(var w in d){var x=d[w],y=x.minw,z=x.maxw,A=x.minh,B=x.maxh,C="em";!y||(y=parseFloat(y)*(y.indexOf(C)>-1?r||q():1)),!z||(z=parseFloat(z)*(z.indexOf(C)>-1?r||q():1)),!A||(A=parseFloat(A)*(A.indexOf(C)>-1?r||q():1)),!B||(B=parseFloat(B)*(B.indexOf(C)>-1?r||q():1)),(!y&&!z||(!y||y&&l>=y)&&(!z||z&&l<=z))&&(!A&&!B||(!A||A&&n>=A)&&(!B||B&&n<=B))&&(t[x.media]||(t[x.media]=[]),t[x.media].push(e[x.rules]))}for(var w in f)f[w]&&f[w].parentNode===i&&i.removeChild(f[w]);for(var w in t){var D=b.createElement("style"),E=t[w].join("\n");D.type="text/css",D.media=w,i.insertBefore(D,u.nextSibling),D.styleSheet?D.styleSheet.cssText=E:D.appendChild(b.createTextNode(E)),f.push(D)}},t=function(a,b){var c=u();if(!c)return;c.open("GET",a,!0),c.onreadystatechange=function(){if(c.readyState!=4||c.status!=200&&c.status!=304)return;b(c.responseText)};if(c.readyState==4)return;c.send(null)},u=function(){var a=!1;try{a=new XMLHttpRequest}catch(b){a=new ActiveXObject("Microsoft.XMLHTTP")}return function(){return a}}();l(),respond.update=l,a.addEventListener?a.addEventListener("resize",v,!1):a.attachEvent&&a.attachEvent("onresize",v)}(this)
+window.matchMedia = window.matchMedia || (function(doc, undefined){
+  
+  var bool,
+      docElem  = doc.documentElement,
+      refNode  = docElem.firstElementChild || docElem.firstChild,
+      // fakeBody required for <FF4 when executed in <head>
+      fakeBody = doc.createElement('body'),
+      div      = doc.createElement('div');
+  
+  div.id = 'mq-test-1';
+  div.style.cssText = "position:absolute;top:-100em";
+  fakeBody.appendChild(div);
+  
+  return function(q){
+    
+    div.innerHTML = '&shy;<style media="'+q+'"> #mq-test-1 { width: 42px; }</style>';
+    
+    docElem.insertBefore(fakeBody, refNode);
+    bool = div.offsetWidth == 42;  
+    docElem.removeChild(fakeBody);
+    
+    return { matches: bool, media: q };
+  };
+  
+})(document);
+
+
+
+
+/*! Respond.js v1.1.0rc1: min/max-width media query polyfill. (c) Scott Jehl. MIT/GPLv2 Lic. j.mp/respondjs  */
+(function( win ){
+  //exposed namespace
+	win.respond		= {};
+	
+	//define update even in native-mq-supporting browsers, to avoid errors
+	respond.update	= function(){};
+	
+	//expose media query support flag for external use
+	respond.mediaQueriesSupported	= win.matchMedia && win.matchMedia( "only all" ).matches;
+	
+	//if media queries are supported, exit here
+	if( respond.mediaQueriesSupported ){ return; }
+	
+	//define vars
+	var doc 			= win.document,
+		docElem 		= doc.documentElement,
+		mediastyles		= [],
+		rules			= [],
+		appendedEls 	= [],
+		parsedSheets 	= {},
+		resizeThrottle	= 30,
+		head 			= doc.getElementsByTagName( "head" )[0] || docElem,
+		links			= head.getElementsByTagName( "link" ),
+		requestQueue	= [],
+		
+		//loop stylesheets, send text content to translate
+		ripCSS			= function(){
+			var sheets 	= links,
+				sl 		= sheets.length,
+				i		= 0,
+				//vars for loop:
+				sheet, href, media, isCSS;
+
+			for( ; i < sl; i++ ){
+				sheet	= sheets[ i ],
+				href	= sheet.href,
+				media	= sheet.media,
+				isCSS	= sheet.rel && sheet.rel.toLowerCase() === "stylesheet";
+
+				//only links plz and prevent re-parsing
+				if( !!href && isCSS && !parsedSheets[ href ] ){
+					// selectivizr exposes css through the rawCssText expando
+					if (sheet.styleSheet && sheet.styleSheet.rawCssText) {
+						translate( sheet.styleSheet.rawCssText, href, media );
+						parsedSheets[ href ] = true;
+					} else {
+						if( !/^([a-zA-Z]+?:(\/\/)?)/.test( href )
+							|| href.replace( RegExp.$1, "" ).split( "/" )[0] === win.location.host ){
+							requestQueue.push( {
+								href: href,
+								media: media
+							} );
+						}
+					}
+				}
+			}
+			makeRequests();
+		},
+		
+		//recurse through request queue, get css text
+		makeRequests	= function(){
+			if( requestQueue.length ){
+				var thisRequest = requestQueue.shift();
+				
+				ajax( thisRequest.href, function( styles ){
+					translate( styles, thisRequest.href, thisRequest.media );
+					parsedSheets[ thisRequest.href ] = true;
+					makeRequests();
+				} );
+			}
+		},
+		
+		//find media blocks in css text, convert to style blocks
+		translate			= function( styles, href, media ){
+			var qs			= styles.match(  /@media[^\{]+\{([^\{\}]+\{[^\}\{]+\})+/gi ),
+				ql			= qs && qs.length || 0,
+				//try to get CSS path
+				href		= href.substring( 0, href.lastIndexOf( "/" )),
+				repUrls		= function( css ){
+					return css.replace( /(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g, "$1" + href + "$2$3" );
+				},
+				useMedia	= !ql && media,
+				//vars used in loop
+				i			= 0,
+				j, fullq, thisq, eachq, eql;
+
+			//if path exists, tack on trailing slash
+			if( href.length ){ href += "/"; }	
+				
+			//if no internal queries exist, but media attr does, use that	
+			//note: this currently lacks support for situations where a media attr is specified on a link AND
+				//its associated stylesheet has internal CSS media queries.
+				//In those cases, the media attribute will currently be ignored.
+			if( useMedia ){
+				ql = 1;
+			}
+			
+
+			for( ; i < ql; i++ ){
+				j	= 0;
+				
+				//media attr
+				if( useMedia ){
+					fullq = media;
+					rules.push( repUrls( styles ) );
+				}
+				//parse for styles
+				else{
+					fullq	= qs[ i ].match( /@media *([^\{]+)\{([\S\s]+?)$/ ) && RegExp.$1;
+					rules.push( RegExp.$2 && repUrls( RegExp.$2 ) );
+				}
+				
+				eachq	= fullq.split( "," );
+				eql		= eachq.length;
+					
+				for( ; j < eql; j++ ){
+					thisq	= eachq[ j ];
+					mediastyles.push( { 
+						media	: thisq.match( /(only\s+)?([a-zA-Z]+)(\sand)?/ ) && RegExp.$2,
+						rules	: rules.length - 1,
+						minw	: thisq.match( /\(min\-width:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/ ) && parseFloat( RegExp.$1 ) + ( RegExp.$2 || "" ), 
+						maxw	: thisq.match( /\(max\-width:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/ ) && parseFloat( RegExp.$1 ) + ( RegExp.$2 || "" ),
+						minh	: thisq.match( /\(min\-height:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/ ) && parseFloat( RegExp.$1 ) + ( RegExp.$2 || "" ), 
+						maxh	: thisq.match( /\(max\-height:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/ ) && parseFloat( RegExp.$1 ) + ( RegExp.$2 || "" )
+					} );
+				}	
+			}
+
+			applyMedia();
+		},
+        	
+		lastCall,
+		
+		resizeDefer,
+		
+		// returns the value of 1em in pixels
+		getEmValue		= function() {
+			var ret,
+				div = doc.createElement('div'),
+				body = doc.body,
+				fakeUsed = false;
+									
+			div.style.cssText = "position:absolute;font-size:1em;width:1em";
+					
+			if( !body ){
+				body = fakeUsed = doc.createElement( "body" );
+			}
+					
+			body.appendChild( div );
+								
+			docElem.insertBefore( body, docElem.firstChild );
+								
+			ret = div.offsetWidth;
+								
+			if( fakeUsed ){
+				docElem.removeChild( body );
+			}
+			else {
+				body.removeChild( div );
+			}
+			
+			//also update eminpx before returning
+			ret = eminpx = parseFloat(ret);
+								
+			return ret;
+		},
+		
+		//cached container for 1em value, populated the first time it's needed 
+		eminpx,
+		
+		//enable/disable styles
+		applyMedia = function( fromResize ){
+			var wname		= "clientWidth",
+				docElemProp	= docElem[ wname ],
+				currWidth	= doc.compatMode === "CSS1Compat" && docElemProp || doc.body[ wname ] || docElemProp,
+				hname		= "clientHeight",
+				docElemProp	= docElem[ hname ],
+				currHeight	= doc.compatMode === "CSS1Compat" && docElemProp || doc.body[ hname ] || docElemProp,
+				styleBlocks	= {},
+				lastLink	= links[ links.length-1 ],
+				now 		= (new Date()).getTime();
+
+			//throttle resize calls	
+			if( fromResize && lastCall && now - lastCall < resizeThrottle ){
+				clearTimeout( resizeDefer );
+				resizeDefer = setTimeout( applyMedia, resizeThrottle );
+				return;
+			}
+			else {
+				lastCall	= now;
+			}
+			
+			for( var i in mediastyles ){
+				var thisstyle = mediastyles[ i ],
+					minw = thisstyle.minw,
+					maxw = thisstyle.maxw,
+					minh = thisstyle.minh,
+					maxh = thisstyle.maxh,
+					em = "em";
+				
+				if( !!minw ){
+					minw = parseFloat( minw ) * ( minw.indexOf( em ) > -1 ? ( eminpx || getEmValue() ) : 1 );
+				}
+				if( !!maxw ){
+					maxw = parseFloat( maxw ) * ( maxw.indexOf( em ) > -1 ? ( eminpx || getEmValue() ) : 1 );
+				}
+				if( !!minh ){
+					minh = parseFloat( minh ) * ( minh.indexOf( em ) > -1 ? ( eminpx || getEmValue() ) : 1 );
+				}
+				if( !!maxh ){
+					maxh = parseFloat( maxh ) * ( maxh.indexOf( em ) > -1 ? ( eminpx || getEmValue() ) : 1 );
+				}
+				
+				if((!minw && !maxw || 
+					( !minw || minw && currWidth >= minw ) && 
+					( !maxw || maxw && currWidth <= maxw )) &&
+					(!minh && !maxh || 
+					( !minh || minh && currHeight >= minh ) && 
+					( !maxh || maxh && currHeight <= maxh ))){
+						if( !styleBlocks[ thisstyle.media ] ){
+							styleBlocks[ thisstyle.media ] = [];
+						}
+						styleBlocks[ thisstyle.media ].push( rules[ thisstyle.rules ] );
+				}
+			}
+			
+			//remove any existing respond style element(s)
+			for( var i in appendedEls ){
+				if( appendedEls[ i ] && appendedEls[ i ].parentNode === head ){
+					head.removeChild( appendedEls[ i ] );
+				}
+			}
+			
+			//inject active styles, grouped by media type
+			for( var i in styleBlocks ){
+				var ss		= doc.createElement( "style" ),
+					css		= styleBlocks[ i ].join( "\n" );
+				
+				ss.type = "text/css";	
+				ss.media	= i;
+				
+				//originally, ss was appended to a documentFragment and sheets were appended in bulk.
+				//this caused crashes in IE in a number of circumstances, such as when the HTML element had a bg image set
+				head.insertBefore( ss, lastLink.nextSibling );
+				
+				if ( ss.styleSheet ){ 
+					ss.styleSheet.cssText = css;
+				} 
+				else {
+					ss.appendChild( doc.createTextNode( css ) );
+				}
+				
+				//push to appendedEls to track for later removal
+				appendedEls.push( ss );
+			}
+		},
+		//tweaked Ajax functions from Quirksmode
+		ajax = function( url, callback ) {
+			var req = xmlHttp();
+			if (!req){
+				return;
+			}
+			req.open( "GET", url, true );
+			req.onreadystatechange = function () {
+				if ( req.readyState != 4 || req.status != 200 && req.status != 304 ){
+					return;
+				}
+				callback( req.responseText );
+			}
+			if ( req.readyState == 4 ){
+				return;
+			}
+			req.send( null );
+		},
+		//define ajax obj 
+		xmlHttp = (function() {
+			var xmlhttpmethod = false;	
+			try {
+				xmlhttpmethod = new XMLHttpRequest();
+			}
+			catch( e ){
+				xmlhttpmethod = new ActiveXObject( "Microsoft.XMLHTTP" );
+			}
+			return function(){
+				return xmlhttpmethod;
+			};
+		})();
+	
+	//translate CSS
+	ripCSS();
+	
+	//expose update for re-running respond later on
+	respond.update = ripCSS;
+	
+	//adjust on resize
+	function callMedia(){
+		applyMedia( true );
+	}
+	if( win.addEventListener ){
+		win.addEventListener( "resize", callMedia, false );
+	}
+	else if( win.attachEvent ){
+		win.attachEvent( "onresize", callMedia );
+	}
+})(this);
